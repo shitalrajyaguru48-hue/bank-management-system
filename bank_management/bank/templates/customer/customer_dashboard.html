@@ -1,0 +1,102 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5">
+  <div class="card shadow-sm p-4">
+    <h2 class="card-title text-center mb-4">Customer Dashboard</h2>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <p><strong>Customer Name:</strong> {{ customer_name }}</p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Branch:</strong> {{ customer_branch }}</p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Manager Name:</strong> {{ manager_names }}</p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Account Number:</strong> {{ account_number }}</p>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{% url 'send_message' %}" class="btn btn-warning btn-lg">
+        <i class="bi bi-envelope-fill me-2"></i>Send Message to Manager
+      </a>
+    </div>
+
+    {% if reply %}
+    <div class="card shadow-sm p-3 mt-4 border-success">
+      <h5 class="text-success">Reply from Manager</h5>
+      <p>{{ reply }}</p>
+    </div>
+    {% else %}
+    <div class="text-muted text-center mt-4">No reply from manager yet.</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="text-center mt-4">
+  <!-- QR Code Container (empty initially) -->
+  <div id="qrContainer" class="mb-3 d-flex justify-content-center"></div>
+
+  <!-- Button -->
+  <button id="showQrBtn" class="btn btn-warning btn-lg">
+    <i class="bi bi-qr-code me-2"></i>Scan QR Code
+  </button>
+
+  <!-- Countdown Timer -->
+  <div id="qrTimer" class="mt-2 text-muted" style="display: none">
+    QR will disappear in <span id="seconds">60</span> seconds
+  </div>
+</div>
+<div class="text-center mt-4">
+  {% if not profile.upi_id %}
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success btn-lg">
+      <i class="bi bi-bank me-2"></i>Create Your UPI ID
+    </button>
+  </form>
+  {% else %}
+  <p><strong>Your UPI ID:</strong> {{ profile.upi_id }}</p>
+  {% endif %}
+</div>
+
+<script>
+  document.getElementById("showQrBtn").addEventListener("click", function () {
+    const container = document.getElementById("qrContainer");
+    const timerDiv = document.getElementById("qrTimer");
+    const secondsSpan = document.getElementById("seconds");
+
+    // Clear previous QR (if any)
+    container.innerHTML = "";
+
+    // Create the QR image dynamically
+    const qrImg = document.createElement("img");
+    qrImg.src = "data:image/png;base64,{{ qr_base64 }}"; // server-generated QR
+    qrImg.alt = "QR Code";
+    qrImg.style.width = "200px";
+    qrImg.style.height = "200px";
+
+    container.appendChild(qrImg);
+
+    // Show container and timer
+    timerDiv.style.display = "block";
+
+    // Countdown logic
+    let secondsLeft = 60;
+    secondsSpan.innerText = secondsLeft;
+
+    const countdown = setInterval(() => {
+      secondsLeft -= 1;
+      secondsSpan.innerText = secondsLeft;
+
+      if (secondsLeft <= 0) {
+        clearInterval(countdown);
+        container.innerHTML = ""; // remove QR
+        timerDiv.style.display = "none";
+      }
+    }, 1000);
+  });
+</script>
+{% endblock %}

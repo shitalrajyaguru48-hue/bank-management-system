@@ -1,0 +1,85 @@
+{% extends 'base.html' %} {% block content %}
+
+<style>
+  .hero {
+    width: 100%;
+    min-height: 90vh;
+    background: linear-gradient(rgba(0, 0, 80, 0.7), rgba(0, 0, 130, 0.8)),
+      url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80")
+        no-repeat center center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    font-weight: bold;
+  }
+
+  .hero .btn {
+    min-width: 150px;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+
+    .hero .btn {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .hero .btn + .btn {
+      margin-left: 0;
+    }
+  }
+</style>
+
+<section class="hero">
+  <div class="hero-content text-center">
+    <h1>Welcome to MyBank</h1>
+    <p class="lead mt-3">Secure • Reliable • Fast Banking Solutions</p>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'register' %}" class="btn btn-warning btn-lg mt-4"
+      >Get Started</a
+    >
+    <a href="{% url 'login' %}" class="btn btn-light btn-lg mt-4 ms-2"
+      >Login Now</a
+    >
+    {% endif %}
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold">Our Services</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card service-card shadow text-center p-4">
+          <h4>Account Management</h4>
+          <p>Open, manage and monitor your bank accounts easily.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card service-card shadow text-center p-4">
+          <h4>Fund Transfer</h4>
+          <p>Transfer money securely between accounts anytime.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card service-card shadow text-center p-4">
+          <h4>Loan Services</h4>
+          <p>Apply and track personal or business loans online.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

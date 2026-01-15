@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container my-4">
+
+  <h2 class="mb-4 text-center text-primary">Admin Dashboard</h2>
+
+  <!-- Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-4 mb-3">
+      <div class="card text-white bg-primary h-100 text-center shadow-sm">
+        <div class="card-body">
+          <h5>Total Managers</h5>
+          <p class="display-6">{{ total_managers }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card text-white bg-success h-100 text-center shadow-sm">
+        <div class="card-body">
+          <h5>Total Customers</h5>
+          <p class="display-6">{{ total_customers }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card text-white bg-warning h-100 text-center shadow-sm">
+        <div class="card-body">
+          <h5>Total Branches</h5>
+          <p class="display-6">{{ total_branches }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar navigation -->
+  <ul class="nav nav-tabs mb-4" id="adminTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="customers-tab" data-bs-toggle="tab" data-bs-target="#customers" type="button">Customers</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="managers-tab" data-bs-toggle="tab" data-bs-target="#managers" type="button">Managers</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="branches-tab" data-bs-toggle="tab" data-bs-target="#branches" type="button">Branches</button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="adminTabContent">
+
+    <!-- Customers Tab -->
+    <div class="tab-pane fade show active" id="customers">
+      <div class="table-responsive shadow-sm mb-5">
+        <table class="table table-striped table-hover align-middle custom-table">
+          <thead class="bg-primary text-white">
+            <tr>
+              <th>Account Number</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Branch</th>
+              <th>Manager(s)</th>
+              <th>Update Role/Branch</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for data in customer_data %}
+            <tr>
+              <td>{{ data.account_number }}</td>
+              <td>{{ data.customer.user.username }}</td>
+              <td>{{ data.customer.user.email }}</td>
+              <td>
+                <form method="POST" class="d-flex align-items-center">
+                  {% csrf_token %}
+                  <input type="hidden" name="customer_id" value="{{ data.customer.id }}">
+                  <select name="branch_id" class="form-select form-select-sm me-2">
+                    <option value="">Not Assigned</option>
+                    {% for branch in branches %}
+                      <option value="{{ branch.id }}" {% if data.branch and data.branch.id == branch.id %}selected{% endif %}>{{ branch.name }}</option>
+                    {% endfor %}
+                  </select>
+                  <button type="submit" class="btn btn-sm btn-info">Update</button>
+                </form>
+              </td>
+              <td>
+                {% if data.managers %}
+                  {% for manager_name in data.managers %}
+                    <span class="badge bg-info text-dark me-1">{{ manager_name }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="text-muted">No Manager Assigned</span>
+                {% endif %}
+              </td>
+              <td>
+                <form method="POST" class="d-flex align-items-center">
+                  {% csrf_token %}
+                  <input type="hidden" name="customer_id" value="{{ data.customer.id }}">
+                  <select name="new_role" class="form-select form-select-sm me-2">
+                    <option value="customer" {% if data.customer.role == 'customer' %}selected{% endif %}>Customer</option>
+                    <option value="manager" {% if data.customer.role == 'manager' %}selected{% endif %}>Manager</option>
+                  </select>
+                  <button type="submit" class="btn btn-sm btn-info">Update</button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center text-muted">No customers found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Managers Tab -->
+    <div class="tab-pane fade" id="managers">
+      <div class="table-responsive shadow-sm mb-5">
+        <table class="table table-striped table-hover align-middle custom-table">
+          <thead class="bg-success text-white">
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Branch</th>
+              <th>Role</th>
+              <th>Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for manager in managers %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ manager.user.get_full_name|default:manager.user.username }}</td>
+              <td>{{ manager.user.email }}</td>
+              <td>
+                <form method="POST" class="d-flex align-items-center">
+                  {% csrf_token %}
+                  <input type="hidden" name="customer_id" value="{{ manager.id }}">
+                  <select name="branch_id" class="form-select form-select-sm">
+                    <option value="">Not Assigned</option>
+                    {% for branch in branches %}
+                      <option value="{{ branch.id }}" {% if manager.branch and manager.branch.id == branch.id %}selected{% endif %}>{{ branch.name }}</option>
+                    {% endfor %}
+                  </select>
+              </td>
+              <td>
+                  <select name="new_role" class="form-select form-select-sm">
+                    <option value="manager" {% if manager.role == 'manager' %}selected{% endif %}>Manager</option>
+                    <option value="customer" {% if manager.role == 'customer' %}selected{% endif %}>Customer</option>
+                  </select>
+              </td>
+              <td>
+                  <button type="submit" class="btn btn-sm btn-info">Update</button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center text-muted">No managers found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Branches Tab -->
+    <div class="tab-pane fade" id="branches">
+      <div class="table-responsive shadow-sm mb-5">
+        <table class="table table-striped table-hover align-middle custom-table">
+          <thead class="bg-warning text-white">
+            <tr>
+              <th>#</th>
+              <th>Branch Name</th>
+              <th>Managers Count</th>
+              <th>Customers Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for data in branch_data %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ data.branch.name }}</td>
+              <td>{{ data.managers_count }}</td>
+              <td>{{ data.customers_count }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center text-muted">No branches found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .custom-table tbody tr:hover {
+    background-color: #f1f9ff;
+    transition: 0.3s;
+  }
+  .custom-table thead th {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .badge {
+    font-size: 0.85rem;
+  }
+</style>
+{% endblock %}

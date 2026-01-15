@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bank Management System</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      .service-card {
+        transition: transform 0.3s;
+      }
+
+      .service-card:hover {
+        transform: translateY(-10px);
+      }
+
+      footer {
+        background-color: #0b3d91; /* darker blue */
+        color: white;
+      }
+
+      .navbar {
+        background-color: #0b3d91; /* dark blue */
+      }
+
+      .navbar .nav-link,
+      .navbar .navbar-brand {
+        color: #ffffff;
+      }
+
+      .navbar .nav-link:hover,
+      .navbar .nav-link.active {
+        color: #ffc107; /* highlight color */
+      }
+
+      .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+      }
+
+      .profile-img {
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">MyBank</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'home' %}">Home</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home_loan' %}">Loan</a>
+            </li>
+
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'open_accounts' %}">Dashboard</a>
+            </li>
+
+            {% if user.profile.role == 'customer' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'customer_statement' %}"
+                >Statement</a
+              >
+            </li>
+            {% endif %} {% endif %}
+
+            <!-- User Dropdown -->
+            {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle d-flex align-items-center"
+                href="#"
+                id="userDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                {% if user.profile.image %}
+                <img
+                  src="{{ user.profile.image.url }}"
+                  alt="Profile Image"
+                  class="rounded-circle me-2 profile-img"
+                />
+                {% else %}
+                <img
+                  src="{% static 'profile_pics/default.png' %}"
+                  alt="Default Profile"
+                  class="rounded-circle me-2 profile-img"
+                />
+                {% endif %} {{ user.username }}
+              </a>
+
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="userDropdown"
+              >
+                <li>
+                  <a class="dropdown-item" href="{% url 'profile_edit' %}"
+                    >Edit Profile</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="dropdown-item" type="submit">Logout</button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">Register</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    <footer class="text-center py-3">
+      <p class="mb-0">© 2025 MyBank | Bank Management System</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

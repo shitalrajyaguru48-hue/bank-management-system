@@ -1,0 +1,87 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="container mt-5">
+  <!-- Manager Info Card -->
+  <div class="card shadow-sm p-4 mb-5">
+    <h2 class="card-title text-center mb-4">Manager Dashboard</h2>
+    <div class="row text-center">
+      <div class="col-md-6 mb-3">
+        <div class="p-3 border rounded bg-light">
+          <h5>Manager Name</h5>
+          <p class="fw-bold">{{ user.username }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="p-3 border rounded bg-light">
+          <h5>Branch</h5>
+          <p class="fw-bold">
+            {{ manager_branch.name|default:"No branch assigned" }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customers Table Card -->
+  <div class="card shadow-sm p-4">
+    <h3 class="card-title mb-4">Customers in Your Branch</h3>
+
+    {% if customers %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-primary">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Balance</th>
+            <th>Message</th>
+            <th>Update</th>
+            <th>Reply Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for customer in customers %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              {{ customer.user.get_full_name|default:customer.user.username }}
+            </td>
+            <td>{{ customer.user.email }}</td>
+            <td>${{ customer.balance|floatformat:2 }}</td>
+            <td>{{ customer.message|default:"-" }}</td>
+            <td>
+              <a
+                href="{% url 'edit_balance' customer.id %}"
+                class="btn btn-sm btn-info"
+              >
+                <i class="bi bi-pencil-square me-1"></i>View/Edit
+              </a>
+            </td>
+            <td class="text-center">
+              {% if customer.reply %}
+              <img
+                src="{% static 'images/tick.jpg' %}"
+                alt="Replied"
+                width="20"
+                height="20"
+              />
+              {% else %}
+              <a
+                href="{% url 'reply' customer.id %}"
+                class="btn btn-sm btn-primary"
+              >
+                Reply
+              </a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No customers found in your branch.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

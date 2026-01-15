@@ -1,0 +1,102 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container my-5">
+  <h2 class="text-center mb-4">🏠 Home Loan Calculator</h2>
+
+  <div class="card p-4 shadow">
+    <!-- Loan Amount -->
+    <div class="mb-4">
+      <label class="form-label fw-bold">
+        Loan Amount: ₹ <span id="amountValue">{{ amount }}</span>
+      </label>
+      <input
+        type="range"
+        id="amount"
+        class="form-range"
+        min="0"
+        max="500000"
+        step="1000"
+        value="{{ amount }}"
+      />
+    </div>
+
+    <!-- Interest Rate -->
+    <div class="mb-4">
+      <label class="form-label fw-bold">
+        Interest Rate (%): <span id="rateValue">{{ rate }}</span>
+      </label>
+      <input
+        type="range"
+        id="rate"
+        class="form-range"
+        min="1"
+        max="15"
+        step="0.1"
+        value="{{ rate }}"
+      />
+    </div>
+
+    <!-- Loan Tenure -->
+    <div class="mb-4">
+      <label class="form-label fw-bold">
+        Loan Tenure (Years): <span id="yearsValue">{{ years }}</span>
+      </label>
+      <input
+        type="range"
+        id="years"
+        class="form-range"
+        min="1"
+        max="30"
+        step="1"
+        value="{{ years }}"
+      />
+    </div>
+  </div>
+
+  <!-- Result Section -->
+  <div class="card p-4 mt-4 shadow">
+    <h4 class="text-center mb-3">📊 Loan Result</h4>
+    <p>
+      <strong>Total Interest:</strong> ₹
+      <span id="interest">{{ interest }}</span>
+    </p>
+    <p>
+      <strong>Total Amount Payable:</strong> ₹
+      <span id="total">{{ total }}</span>
+    </p>
+  </div>
+</div>
+
+<script>
+  // Function to update the URL with GET parameters and reload interest
+  function updateLoan() {
+    let amount = document.getElementById("amount").value;
+    let rate = document.getElementById("rate").value;
+    let years = document.getElementById("years").value;
+
+    document.getElementById("amountValue").innerText =
+      parseInt(amount).toLocaleString();
+    document.getElementById("rateValue").innerText = rate;
+    document.getElementById("yearsValue").innerText = years;
+
+    // Send GET request to server for calculation
+    fetch(`?amount=${amount}&rate=${rate}&years=${years}`)
+      .then((response) => response.text())
+      .then((html) => {
+        // Parse server response and extract interest and total
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+        document.getElementById("interest").innerText =
+          doc.getElementById("interest").innerText;
+        document.getElementById("total").innerText =
+          doc.getElementById("total").innerText;
+      });
+  }
+
+  // Attach event listeners to sliders
+  document.getElementById("amount").addEventListener("input", updateLoan);
+  document.getElementById("rate").addEventListener("input", updateLoan);
+  document.getElementById("years").addEventListener("input", updateLoan);
+</script>
+
+{% endblock %}
