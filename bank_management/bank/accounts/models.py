@@ -47,6 +47,9 @@ class Profile(models.Model):
     reply = models.TextField(blank=True, null=True)
     upi_id = models.CharField(max_length=100, blank=True, null=True)
     image = models.ImageField(upload_to='profile_pics/', default='default_profile.png', blank=True)
+    disable_request = models.BooleanField(default=False)
+    disable_approved = models.BooleanField(default=False)
+
     def __str__(self):
         return f"{self.user.username} Profile"
 

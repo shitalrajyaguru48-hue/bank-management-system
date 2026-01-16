@@ -10,5 +10,10 @@ urlpatterns = [
     path('profile/edit/', views.profile_edit, name='profile_edit'),         # Edit profile
     path('open-accounts/', views.open_accounts_redirect, name='open_accounts'),
     path('customer/send-message/', views.send_message, name='send_message'),
+    path(
+    'disable-account/',
+    views.disable_account_request,
+    name='disable_account_request'
+),
 
 ]

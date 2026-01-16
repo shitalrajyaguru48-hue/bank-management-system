@@ -188,5 +188,26 @@ def reply(request, profile_id):
     return render(request, 'manager/reply_message.html', {
         'customer': customer
     })
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 
-    
+
+@login_required
+def approve_disable_account(request, profile_id):
+    # Only manager can approve
+    manager_profile = Profile.objects.get(user=request.user)
+    if manager_profile.role != 'manager':
+        messages.error(request, "You are not allowed to do this.")
+        return redirect('manager_dash')
+
+    # Get customer
+    customer = get_object_or_404(Profile, id=profile_id, role='customer', branch=manager_profile.branch)
+
+    # Delete customer account
+    user = customer.user
+    customer.delete()  # deletes Profile
+    user.delete()      # deletes User
+
+    messages.success(request, "Customer account has been deleted successfully.")
+    return redirect('manager_dash')

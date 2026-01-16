@@ -181,9 +181,6 @@ def send_message(request):
     }
     return render(request, 'customer/send_message.html', context)
 
-
-
-
 @login_required
 def manager_dash(request):
     profile = Profile.objects.get(user=request.user)
@@ -212,17 +209,18 @@ def open_accounts_redirect(request):
     elif profile.role == 'customer':
         return redirect('customer_dash')
 
-    # fallback safety
-#     return redirect('home')
+@login_required
+def disable_account_request(request):
+    profile = Profile.objects.get(user=request.user)
 
-# @login_required
-# def customer_dashboard(request):
-#     return render(request, 'customer/customer_dashboard.html')
+    # Only customers can request
+    if profile.role != 'customer':
+        return redirect('home')
 
-# @login_required
-# def manager_dashboard(request):
-#     return render(request, 'manager/manager_dashboard.html')
+    # Mark disable request
+    profile.disable_request = True
+    profile.disable_message = "Customer requested to disable the account."  # <-- message for manager
+    profile.save()
 
-# @login_required
-# def admin_dashboard(request):
-#     return render(request, 'admin/admin_dashboard.html')
+    messages.success(request, "Disable account request sent to manager.")
+    return redirect('customer_dash')

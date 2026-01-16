@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Profile, Account
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'role', 'branch', 'account_number', 'balance','reply','message','upi_id')
+    list_display = ('user', 'role', 'branch', 'account_number', 'balance','reply','message','upi_id','disable_request','disable_approved')
     list_filter = ('role', 'branch')
     search_fields = ('user__username', 'user__email', 'account_number')
 

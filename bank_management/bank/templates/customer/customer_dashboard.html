@@ -34,6 +34,14 @@
     {% endif %}
   </div>
 </div>
+<div class="text-center mt-4">
+  <form method="post" action="{% url 'disable_account_request' %}">
+    {% csrf_token %}
+    <button class="btn btn-danger btn-lg">
+      <i class="bi bi-x-circle me-2"></i>Disable Account
+    </button>
+  </form>
+</div>
 
 <div class="text-center mt-4">
   <!-- QR Code Container (empty initially) -->
