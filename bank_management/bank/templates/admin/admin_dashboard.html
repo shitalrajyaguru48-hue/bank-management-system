@@ -58,7 +58,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>Branch</th>
-              <th>Manager(s)</th>
+              <th>Manager</th>
               <th>Update Role/Branch</th>
             </tr>
           </thead>
@@ -84,7 +84,7 @@
               <td>
                 {% if data.managers %}
                   {% for manager_name in data.managers %}
-                    <span class="badge bg-info text-dark me-1">{{ manager_name }}</span>
+                    <span class="text-dark me-1">{{ manager_name }}</span>
                   {% endfor %}
                 {% else %}
                   <span class="text-muted">No Manager Assigned</span>

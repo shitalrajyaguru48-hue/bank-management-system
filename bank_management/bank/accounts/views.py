@@ -9,6 +9,7 @@ import qrcode
 import base64
 from io import BytesIO
 import random
+
 def generate_unique_account_number():
     while True:
         acc_number = "BANK" + str(random.randint(1000000000, 9999999999))
@@ -164,14 +165,18 @@ def send_message(request):
 
     # Get all managers in this branch
     managers = Profile.objects.filter(branch=branch, role='manager')
+    
+    
+    
+    
+    
     manager_names = ", ".join([m.user.username for m in managers]) if managers.exists() else "No Manager Assigned"
 
     if request.method == 'POST':
         message_text = request.POST.get('message')
         if message_text and managers.exists():
-            for manager in managers:
-                manager.message = message_text  # save message to manager profile
-                manager.save()
+            customer_profile.message = message_text
+            customer_profile.save()
             messages.success(request, "Message sent to manager(s) successfully!")
             return redirect('customer_dash')
 

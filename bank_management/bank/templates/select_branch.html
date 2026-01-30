@@ -1,0 +1,9 @@
+<h3>Select Branch</h3>
+
+<form method="post">
+  {% csrf_token %} {% for profile in profiles %}
+  <button type="submit" name="profile_id" value="{{ profile.id }}">
+    {{ profile.branch.name }}
+  </button>
+  {% endfor %}
+</form>

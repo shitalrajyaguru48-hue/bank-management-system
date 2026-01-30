@@ -36,9 +36,9 @@
             <th>Balance</th>
             <th>Message</th>
             <th>Update</th>
-            <th>Reply Status</th>
-            <th>disable request</th>
-            <th>approve</th>
+            <th>Reply Message</th>
+            <th>Approve Request</th>
+            <!-- renamed column -->
           </tr>
         </thead>
         <tbody>
@@ -71,32 +71,26 @@
               <a
                 href="{% url 'reply' customer.id %}"
                 class="btn btn-sm btn-primary"
+                >Reply</a
               >
-                Reply
-              </a>
               {% endif %}
             </td>
-            <!-- Disable Request Column -->
-            <!-- Disable Request Column -->
-            <!-- Disable Request Column -->
+            <!-- Approve Request Column -->
             <td class="text-center">
-              {% if customer.disable_request %} {{
-              customer.disable_message|default:"Requested to disable" }} {% else
-              %} - {% endif %}
-            </td>
-            <!-- Approve Column -->
-            <td class="text-center">
-              {% if customer.disable_request %} {% if customer.disable_approved
-              %}
-              <span class="text-success fw-bold">Approved</span>
-              {% else %}
+              {% if customer.disable_request %}
               <a
                 href="{% url 'approve_disable_account' customer.id %}"
                 class="btn btn-sm btn-danger"
-                onclick="return confirm('Are you sure you want to approve this request?');"
+                onclick="
+                  return confirm(
+                    'Are you sure you want to approve and delete this customer?',
+                  );
+                "
               >
                 Approve
               </a>
+              {% else %}
+              <span class="text-muted">No Request</span>
               {% endif %}
             </td>
           </tr>
