@@ -1,23 +1,42 @@
-\# Bank Management System
+# Bank Management System
 
-This is a \*\*Bank Management System\*\* project in Python.
+A **Bank Management System** built with Python and Django that allows users to manage bank accounts, perform transactions, and interact with managers and admins in a simulated banking environment.
 
-It allows users to:
+---
 
-\- Create and manage accounts
+## Features
 
-\- Deposit and withdraw money
+- User authentication (Admin, Manager, Customer)
+- Create and manage accounts
+- Deposit and withdraw money
+- View account details and transaction history
+- Customer-Manager communication (messages & replies)
+- Disable account request and approval workflow
+- Branch management for admins and managers
+- Automatic UPI ID generation for customers
+- QR code generation for customer identification
+- Profile management with image upload
 
-\- View account details
+---
 
-\## How to Run
+## Tech Stack
 
-1\. Activate the Python virtual environment:
+- **Backend:** Python, Django
+- **Database:** SQLite (default for Django)
+- **Frontend:** HTML, CSS, Bootstrap
+- **Other Libraries:** qrcode, Pillow
 
-2\. Run the main Python script:
+---
 
-\## Author
+## Installation & Setup
 
-\*\*Shital Rajyaguru\*\*
+#create vnv
+in bank folder create vnv
+active vnv and then run the project
 
-hello
+1. **Clone the repository:**
+
+```bash
+git clone https://github.com/yourusername/yourproject.git
+cd yourproject
+```
